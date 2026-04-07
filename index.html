@@ -54,6 +54,32 @@
     overflow-y: auto; /* 中身がはみ出す場合はスクロール可能にする */
     box-sizing: border-box;
 }
+/* --- スクロールバーのカスタマイズ（スマホ対策） --- */
+
+/* 1. バー全体の太さを設定 */
+.overlay::-webkit-scrollbar {
+    width: 30px; /* 当たり判定を広げるために太めに設定 */
+}
+
+/* 2. バーの通り道（背景） */
+.overlay::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 15px;
+}
+
+/* 3. 動くツマミ部分（見た目の調整） */
+.overlay::-webkit-scrollbar-thumb {
+    background-color: #0ff; /* ネオンブルー */
+    border-radius: 15px;
+    /* 透明なボーダーで隙間を作ることで、判定は広いまま見た目を細く見せる */
+    border: 10px solid rgba(0, 0, 0, 0);
+    background-clip: padding-box;
+}
+
+/* 触れているときの色 */
+.overlay::-webkit-scrollbar-thumb:active {
+    background-color: #fff;
+}
 /* タイトル画面の文字と構成をスリム化 */
 #startScreen h1 {
     font-size: 8vh !important; /* 画面高さの8% */

@@ -437,9 +437,14 @@
                 <p>• やられてもスコアに応じた改造ポイントを獲得！ラボでポイントを使って強化しよう！</p>
             </div>
             <br>
-           <div style="display: flex; flex-direction: row; gap: 15px; justify-content: center; width: 100%;">
-    <button onclick="startGame()" class="lab-btn" style="flex: 1; max-width: 200px;">スタート</button>
-    <button onclick="showLab()" class="lab-btn" style="flex: 1; max-width: 200px; background: rgba(0, 242, 255, 0.2);">ラボへ</button>
+          <div style="display: flex; flex-direction: column; gap: 10px; align-items: center; width: 100%; margin-top: 15px;">
+    <div style="display: flex; flex-direction: row; gap: 15px; justify-content: center; width: 100%;">
+        <button onclick="startGame()" class="lab-btn" style="flex: 1; max-width: 200px;">スタート</button>
+        <button onclick="showLab()" class="lab-btn" style="flex: 1; max-width: 200px; background: rgba(0, 242, 255, 0.2);">ラボへ</button>
+    </div>
+    <button onclick="showFullResetModal()" style="width: auto; padding: 5px 15px; font-size: 0.8rem; border-color: #ff4444; color: #ff4444; background: rgba(255,0,0,0.1); margin-top: 10px; letter-spacing: 1px;">
+        セーブデータを消去して最初から
+    </button>
 </div>
         </div>
 
@@ -504,7 +509,7 @@
     text-align: center; 
     box-shadow: 0 0 50px rgba(0, 0, 0, 0.9);
     
-    /* 【追加】非表示の時はクリックやスワイプを完全にスルーさせる */
+    /* 【追加】非表示の時はクリックやスワイプを完全にスルーせる */
     pointer-events: none; 
 ">
     <div style="font-size: 3rem; margin-bottom: 10px;">⚠️</div>
@@ -597,6 +602,44 @@ function loadSave() {
 
 function saveGame() {
     localStorage.setItem('neonOverdrive_save', JSON.stringify(permanentUpgrades));
+}
+
+// 1. 自作の確認用オーバーレイを表示する
+function showFullResetModal() {
+    const modal = document.getElementById('reset-confirm-modal');
+    if (modal) {
+        // モーダルのテキストを「全データ消去用」に書き換える
+        const textElement = modal.querySelector('p');
+        if (textElement) {
+            textElement.innerHTML = "【警告】すべてのセーブデータ（獲得ポイント、ラボの強化、ベストスコア）を完全に消去します。よろしいですか？";
+        }
+        
+        // RESETボタンが「executeFullReset」を呼ぶように設定
+        const resetBtn = modal.querySelector('button[onclick^="execute"]');
+        if (resetBtn) {
+            resetBtn.setAttribute('onclick', 'executeFullReset()');
+        }
+
+        modal.classList.remove('hidden');
+        modal.style.pointerEvents = 'auto'; // モーダル上のクリックを有効にする
+    }
+}
+
+// 2. 実際の消去処理（モーダル内のRESETボタンから呼ばれる）
+function executeFullReset() {
+    // ローカルストレージをクリア
+    localStorage.removeItem('neonOverdrive_save');
+    // リロード（これによって初期化された状態で再開される）
+    location.reload();
+}
+
+// 3. モーダルを閉じる（キャンセル用）
+function hideResetModal() {
+    const modal = document.getElementById('reset-confirm-modal');
+    if (modal) {
+        modal.classList.add('hidden');
+        modal.style.pointerEvents = 'none';
+    }
 }
 
 // ラボ画面の表示
